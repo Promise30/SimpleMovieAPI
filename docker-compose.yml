@@ -1,0 +1,37 @@
+version: '3.4'
+
+networks:
+  movie-api-project:
+
+services:
+  movie-api-db:
+    container_name: movieapi-db
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    ports:
+      - 8006:1433
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=movie@_apidb101 
+    networks:
+      - movie-api-project
+
+
+
+
+
+  simplemovieapi:
+    container_name: movie-api
+    image: ${DOCKER_REGISTRY-}simplemovieapi
+    build:
+      context: .
+      dockerfile: SimpleMovieAPI/Dockerfile
+    ports:
+      - 8005:80 
+    depends_on:
+      - movie-api-db
+    environment:
+      - DB_HOST= movie-api-db
+      - DB_NAME= MoviesDatabase
+      - DB_SA_PASSWORD= movie@_apidb101
+    networks:
+      - movie-api-project
