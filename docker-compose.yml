@@ -14,8 +14,8 @@ services:
       - MSSQL_SA_PASSWORD=movie@_apidb101 
     networks:
       - movie-api-project
-
-
+    restart: always
+    
 
 
 
@@ -35,3 +35,6 @@ services:
       - DB_SA_PASSWORD= movie@_apidb101
     networks:
       - movie-api-project
+
+volumes:
+   db-data:
