@@ -6,36 +6,39 @@ networks:
 services:
   movie-api-db:
     container_name: movieapi-db
-    image: mcr.microsoft.com/mssql/server:2022-latest
+    image: postgres:latest
     ports:
-      - 8087:1433
+      - "5433:5432"
     environment:
-      - ACCEPT_EULA=Y
-      - MSSQL_SA_PASSWORD=movie@_apidb101 
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=001@postgres
+      - POSTGRES_DB=MoviesAPIDb 
     networks:
       - movie-api-project
     restart: always
+    volumes:
+      - app_data:/var/lib/postgresql/data 
     
 
 
 
   simplemovieapi:
-    container_name: movie-api
+    container_name: movies-api
     image: ${DOCKER_REGISTRY-}simplemovieapi
     build:
       context: .
       dockerfile: SimpleMovieAPI/Dockerfile
     ports:
-      - "8088:80" 
+      - "8080:80" 
     depends_on:
-      - movie-api-db
+      - "movie-api-db"
     environment:
-      - DB_HOST= movie-api-db
-      - DB_NAME= MoviesDatabase
-      - DB_SA_PASSWORD= movie@_apidb101
+      - ConnectionStrings__DefaultConnection=User ID=postgres;Password=001@postgres;Server=movie-api-db;Port=5432;Database=MoviesAPIDb;IntegratedSecurity=true
       - ASPNETCORE_URLS=http://+:80
+
+     
     networks:
       - movie-api-project
 
 volumes:
-   db-data:
+   app_data:
