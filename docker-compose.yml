@@ -26,7 +26,7 @@ services:
       context: .
       dockerfile: SimpleMovieAPI/Dockerfile
     ports:
-      - 8005:443
+      - "8005:443"
     depends_on:
       - movie-api-db
     environment:
